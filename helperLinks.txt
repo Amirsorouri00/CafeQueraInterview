@@ -1,0 +1,2 @@
+https://catonmat.net/tools/generate-integers
+https://www.browserling.com/tools/spaces-to-newlines
