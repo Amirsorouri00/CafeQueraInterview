@@ -1,11 +1,8 @@
-# Print the right input (capital, small is important)
-# Be careful when popping from the list!!(it may be empty and you must check befor popping)
-# You cannot pop from the str. you must use [:] for dropping some of the list
-
-
 def validation (input):
     temp = []
     if len(input)%2 != 0:
+        return False
+    if input[0] in "}])":
         return False
     for elem in input:
         if elem in "{([":
@@ -15,13 +12,16 @@ def validation (input):
             if len(temp) == 0:
                 return False
             el = temp.pop()
-            if (elem == ")" and el == "(" or elem == "}" and
-                el == "{" or elem == "]" and el == "[") == False:
-               return False 
-            else:
-                input = input[1:]
+            if el == "(" and elem != ")":
+                return False
+            elif el == "{" and elem != "}":
+                return False
+            elif el == "[" and elem != "]":
+                return False
         else: 
             return False
+    if len(temp) != 0:
+        return False
     return True
 
 def start():
