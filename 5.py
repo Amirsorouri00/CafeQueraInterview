@@ -1,126 +1,110 @@
-import sys
-input = sys.stdin.readline
-
-def inp():
-    return(int(input()))
-def inlt():
-    return(list(map(int,input().split())))
-def insr():
-    s = input()
-    return(list(s[:len(s) - 1]))
-def invr():
-    return list(map(int,input().split()))
-def my_invr():
-    return list(input().split())
-
-
-def right(x):
-    return x+1
-
-def left(x):
-    return x-1
-
-def up(y):
-    return y+1
-
-def down(y):
-    return y-1
-
-def square(x):
-    return x*x
-
-def begin(level):
-    if level == 0:
-        return 0, 0
-    else:
+def right(x):                                                                                       
+    return x+1                                                                                      
+                                                                                                    
+def left(x):                                                                                        
+    return x-1                                                                                      
+                                                                                                    
+def up(y):                                                                                          
+    return y+1                                                                                      
+                                                                                                    
+def down(y):                                                                                        
+    return y-1                                                                                      
+                                                                                                    
+def square(x):                                                                                      
+    return x*x                                                                                      
+                                                                                                    
+def begin(level):                                                                                   
+    if level == 0:                                                                                  
+        return 0, 0                                                                                 
+    else:                                                                                           
         return level, -(level)+1
 
-def item(start, number, level, isList = False):
-    minim = -(level)
-    maxim = level
-    x, y = begin(level)
-    beg = [x,y]
-    if isList == True:
-        print(*beg, sep = " ")
-
-    while number > start and beg[1] < maxim:
-        beg[1] = up(beg[1])
-        start+=1
-        if isList == True:
-            print(*beg, sep = " ")
-
-
-    if number == start:
-        return beg
-    
-    while number > start and beg[0] > minim:
-        beg[0] = left(beg[0])
-        start+=1
-        if isList == True:
-            print(*beg, sep = " ")
-
-    if number == start:
-        return beg
-    
-    while number > start and beg[1] > minim:
-        beg[1] = down(beg[1])
-        start+=1
-        if isList == True:
-            print(*beg, sep = " ")
-        
-    if number == start:
-        return beg
-    
-    while number > start and beg[0] < maxim:
-        beg[0] = right(beg[0])
-        start+=1
-        if isList == True:
-            print(*beg, sep = " ")
-
-    return beg
-
-def calculate_level(number):
-    level = 0
-    temp = 0
-    x = 1
-    k = 2
-    u = 1
-    while temp + x < number:
+def calculate_level(tuple, level, count):
+    count = 1
+    if tuple[1] == 1:
+        return 1, 1
+    sum = 0
+    while count < tuple[1]:
+        constant = level * 2
+        sum = (1 + constant)*4 - 4
+        count+= sum
         level+=1
-        temp+=x
-        x = (square(u+k) - temp)
-        u+=2
-    return level, temp, x
+    return level, count-sum+1
 
-def get_item(number, isList = False):
-    level, itemps_passd, items_in_level = calculate_level(number)
-    return item(itemps_passd+1, number, level, isList)
-
-def get_list(number):
-    level, itemps_passd, items_in_level = calculate_level(number)
-    temp = 0
-    wnumber = 1
-    while temp <= level and wnumber <= number:
-        leve, passd, itemslev = calculate_level(wnumber)
-        if temp == level:
-            x = number
-        else:
-            x = passd + itemslev
-        get_item(x, True)
-        wnumber += itemslev
-        temp+=1
+def steps_to_end(startNum, query, level, is_list):
+    if level == 2 and is_list:
+        print(0, 0)
+    startTuple = list(begin(level-1))
+    level-=1
+    count = startNum
+    while startTuple[1] != level and count != query[1]:
+        count+=1
+        if is_list:
+            print(*startTuple, " ")
+        startTuple[1] = up(startTuple[1])
+    if count == query[1]:# or (is_list and startTuple[1] == level):
+        print(*startTuple, " ")
+    #if count==query[1]:
+        return True
+    while startTuple[0] != -level and count != query[1]:                                             
+        count+=1
+        if is_list:                                                                                 
+            print(*startTuple, " ")                                                                       
+        startTuple[0] = left(startTuple[0])
+    if count == query[1]:# or (is_list and startTuple[0] == -level):                                                                           
+        print(*startTuple, " ")
+    #if count==query[1]:
+        return True
+    while startTuple[1] != -level and count != query[1]:
+        count+=1
+        if is_list:
+            print(*startTuple, " ")
+        startTuple[1] = down(startTuple[1])
+    if count == query[1]:# or (is_list and startTuple[1] == -level):
+        print(*startTuple, " ") 
+    #if count==query[1]:
+        return True
+    while startTuple[0] != level and count != query[1]:
+        count+=1
+        if is_list:
+            print(*startTuple, " ")
+        startTuple[0] = right(startTuple[0])
+    if count == query[1] or (is_list and startTuple[0] == level):
+        #print(count, query[1])
+        print(*startTuple, " ") 
+    if count == query[1]:
+        return True
+    #print(level, startTuple, count, query[1])
+    return False
 
 def start():
-    n = int(input())
-    arr = []
-    for i in range(0, n):
-        arr.append(my_invr())
-    for array in arr:
-        if array[0] == 'list':
-            get_list(int(array[1]))
+    qNum = int(input())
+    queries = [[x for x in input().split()] for i in range(qNum)]
+
+    for query in queries:
+        query[1] = int(query[1])
+        #print(query)
+        level, start = calculate_level(query, 1, 1)
+        #print(level, start)
+        if query[0] == 'item':
+            x=0
+            steps_to_end(start, query, level, False)
+        elif query[0] == 'list':
+            x=0
+            if query[1] == 1:
+                print(0, 0)
+                return
+            for i in range(2,level+1):
+                if i == level:                
+                    #print("sdfsdfasdfasdf: ", i, level, start)
+                    steps_to_end(start, query, i, True)
+                else:
+                    level, start = calculate_level(query, 1, 1)
+                    steps_to_end(0, query, i, True)
         else:
-            print(get_item(int(array[1]), False))
-
+            print("wrong input.")
+            return 
+    return 
 start()
-
+    
 
