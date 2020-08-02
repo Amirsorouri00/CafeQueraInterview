@@ -38,7 +38,7 @@ def merge(arr, l, m, r):
 	j = 0	 # Initial index of second subarray 
 	k = l	 # Initial index of merged subarray 
 
-	while i < n1 and j < n2 : 
+	while i < n1 and j < n2: 
 		if L[i] >= R[j]: 
 			arr[k] = L[i] 
 			i += 1
@@ -77,7 +77,6 @@ def merge_sort(arr,l,r):
 
 static = 2
 number = [0]
-
 def can(chocolets):
     arr = chocolets[:]
     size = len(arr)
